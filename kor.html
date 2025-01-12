@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Forgó Fánk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .scene {
+            perspective: 1000px;
+            margin: 50px;
+            position: relative;
+        }
+
+        .center-point {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            opacity: 0;
+        }
+
+        .donut {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform-origin: center center;
+        }
+
+        .donut-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-origin: center center;
+            transform-style: preserve-3d;
+        }
+
+        .donut-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #1cabcf;
+            border: 2px solid #138ddf;
+            transform-origin: center center;
+        }
+
+        .donut-hole {
+            position: absolute;
+            width: 40%;
+            height: 40%;
+            left: 30%;
+            top: 30%;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 2px solid #138ddf;
+        }
+
+        .frosting {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #1cabcf;
+            opacity: 0.7;
+            transform: translateZ(2px);
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+
+        .slider {
+            width: 300px;
+            margin: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #138ddf;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #1cabcf;
+        }
+    </style>
+</head>
+<body>
+    <h1>3D Forgó Fánk</h1>
+
+    <div class="scene">
+        <div class="center-point"></div>
+        <div class="donut" id="donut"></div>
+    </div>
+
+    <div class="slider-container">
+        <label for="sizeSlider">Méret:</label>
+        <input type="range" id="sizeSlider" class="slider" min="80" max="500" value="200">
+    </div>
+
+    <div class="slider-container">
+        <label for="speedSlider">Sebesség:</label>
+        <input type="range" id="speedSlider" class="slider" min="1" max="10" value="5">
+    </div>
+
+    <button id="rotateButton">Forgatás indítása</button>
+
+    <script>
+        const donut = document.getElementById('donut');
+        const sizeSlider = document.getElementById('sizeSlider');
+        const speedSlider = document.getElementById('speedSlider');
+        const rotateButton = document.getElementById('rotateButton');
+
+        const segments = 60;
+        let radius = 40;
+
+        function createDonut() {
+            donut.innerHTML = ''; // Tisztítjuk a korábbi szegmenseket
+            
+            // Radius méretezése az összmérethez
+            radius = sizeSlider.value * 0.2;
+
+            for (let i = 0; i < segments; i++) {
+                const segment = document.createElement('div');
+                segment.className = 'donut-segment';
+                segment.style.transform = `rotateY(${(i * 360) / segments}deg) translateZ(${radius}px)`;
+
+                const face = document.createElement('div');
+                face.className = 'donut-face';
+                
+                const hole = document.createElement('div');
+                hole.className = 'donut-hole';
+                
+                const frosting = document.createElement('div');
+                frosting.className = 'frosting';
+
+                face.appendChild(hole);
+                face.appendChild(frosting);
+                segment.appendChild(face);
+                donut.appendChild(segment);
+            }
+        }
+
+        let isRotating = false;
+        let rotationX = 0;
+        let rotationY = 0;
+        let rotationZ = 0;
+        let animationId;
+
+        function updateSize() {
+            const size = sizeSlider.value;
+            donut.style.width = `${size}px`;
+            donut.style.height = `${size}px`;
+            createDonut(); // Újraépítjük a fánkot az új mérettel
+        }
+
+        function rotate() {
+            const speed = speedSlider.value / 2;
+            
+            rotationX += speed * 1.2;
+            rotationY += speed * 0.8;
+            rotationZ += speed * 0.5;
+
+            donut.style.transform = `
+                rotateX(${rotationX}deg) 
+                rotateY(${rotationY}deg) 
+                rotateZ(${rotationZ}deg)
+            `;
+            
+            if (isRotating) {
+                animationId = requestAnimationFrame(rotate);
+            }
+        }
+
+        sizeSlider.addEventListener('input', updateSize);
+
+        rotateButton.addEventListener('click', () => {
+            isRotating = !isRotating;
+            if (isRotating) {
+                rotateButton.textContent = 'Forgatás leállítása';
+                rotate();
+            } else {
+                rotateButton.textContent = 'Forgatás indítása';
+                cancelAnimationFrame(animationId);
+            }
+        });
+
+        // Kezdeti létrehozás
+        createDonut();
+        updateSize();
+    </script>
+</body>
+</html>
