@@ -138,9 +138,8 @@
         let radius = 40;
 
         function createDonut() {
-            donut.innerHTML = ''; // Tisztítjuk a korábbi szegmenseket
+            donut.innerHTML = '';
             
-            // Radius méretezése az összmérethez
             radius = sizeSlider.value * 0.2;
 
             for (let i = 0; i < segments; i++) {
@@ -174,7 +173,7 @@
             const size = sizeSlider.value;
             donut.style.width = `${size}px`;
             donut.style.height = `${size}px`;
-            createDonut(); // Újraépítjük a fánkot az új mérettel
+            createDonut();
         }
 
         function rotate() {
@@ -208,7 +207,6 @@
             }
         });
 
-        // Kezdeti létrehozás
         createDonut();
         updateSize();
     </script>
