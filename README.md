@@ -15,9 +15,9 @@ The sphere's rotation speed and size can be dynamically adjusted through user in
 - **JavaScript:** Adds interactivity, allowing adjustments to speed and size.
 
 ## 🚀 How to Use
-# 🌐 GitHub Pages Link
+### 🌐 GitHub Pages Link
 👉 [https://igenja.github.io/Gomb/](https://igenja.github.io/Gomb/)
 
-# Or clone the repository and run it with Firefox (better performance):
+### Or clone the repository and run it with Firefox (better performance):
    ```bash
    git clone https://github.com/IgenJa/Gomb.git
